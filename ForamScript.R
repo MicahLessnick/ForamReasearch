@@ -4,6 +4,7 @@ library(tidyverse)
 library(readxl)
 
 setwd("C:/Users/Micah Lessnick/Desktop/Foram research")
+#change to project file as needed
 
 Foram_Master_List <- read_excel("Foram Master List.xlsx",
 sheet = "PDT - 2")
@@ -54,8 +55,20 @@ sites=c(Foram_group)
 
 #plot NMDS points
 plot(Foram_comm_NDMS, "sites")
-#color-coordinate sites according to group (is currently done using a naive approach)
-orditorp(Foram_comm_NDMS, labels = sites, "sites", col = c(rep("red", 4), rep("orange", 4), rep("chartreuse3", 4), rep("blue", 4), rep("purple", 4)))
+
+#color-coordinate sites according to group and save color selections into separate vector
+siteCol <- as.data.frame(sites)%>%
+  mutate(Colors = case_when( 
+         endsWith(sites, "1")~"red",
+         endsWith(sites, "2")~"orange",
+         endsWith(sites, "3")~"chartreuse3",
+         endsWith(sites, "4")~"blue",
+         endsWith(sites, "5")~"purple"))
+
+color<-c(siteCol[,2])
+
+#crease col vector based on Foram_group
+orditorp(Foram_comm_NDMS, labels = sites, "sites", col = color)
 #draw hulls around related sites
 ordihull(Foram_comm_NDMS, groups = sites, draw="polygon",col="grey90",label=F)
 #add environmental variable vectors to plot
